@@ -1,10 +1,8 @@
-import React from 'react'
-import StartPage from './Components/StartPage'
+import React from "react";
+import Route from "./Components/Routes/Routes";
 
 const App = () => {
-  return (
-    <StartPage/>
-  )
-}
+  return <Route />;
+};
 
-export default App
+export default App;

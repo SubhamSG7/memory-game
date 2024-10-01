@@ -1,53 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import { ImagesArr } from '../ImageArr';
+import React, { useState, useEffect } from "react";
+import { ImagesArr, unknowImage } from "../ImageArr";
 
 const Game = () => {
-    const [gallery, setGallery] = useState([]);
-    const unknowImage="https://img.freepik.com/premium-photo/3d-unknown-person-icon-anonymous-concept-question-mark-human-silhouette-trendy-modern-vector-3d-style_839035-1745803.jpg"
-    const [flipedId,setFlipedId]=useState([]);
-    const [showId,setShowid]=useState([]);
-    function handleFlip(index,id){
-        if(flipedId.length==0){
-            setFlipedId(prev=>prev.concat({id,index}))
-        }
-        if(flipedId.length>0){
-            setFlipedId(prev=>prev.concat({id,index}))
-            setTimeout(()=>{
-                setFlipedId((prev)=>prev.slice(flipedId.length-1))
-            },3000)
-            // let matched=flipedId.find((val)=>val.id==id)
-            //    if(!matched){
-            //    }
-        }
-        
-    }
-    function handleShow(index,id){
-        if(showId.includes(id)) return true
-    }
-    useEffect(() => {
-        const shuffledImages = [...ImagesArr].sort(() => Math.random() - 0.5);
-        setGallery([...ImagesArr, ...shuffledImages]);
-    }, []); 
+  const [unknownImage, setUnknowImage] = useState("");
+  const [gallery, setGallery] = useState([]);
+  const [flipedId, setFlipedId] = useState([]);
+  const [matchedCard, setMatchedCard] = useState([]);
+  function handleFlip(index, id) {
+    if (flipedId.length === 2) return;
 
-    return (
-        <div className="flex flex-wrap justify-center">
-            {  console.log(flipedId)}
-            {gallery.length > 0 ? (
-                gallery.map((val, index) => (
-                    <div key={index} className="w-[25%] m-2 ">
-                        <img
-                            src={flipedId[0]?.index===index?val.url:unknowImage}
-                            onClick={()=>handleFlip(index,val.id)}
-                            alt={`Image ${index + 1}`}
-                            className="w-full h-auto rounded-lg shadow-lg transition-shadow duration-300 hover:shadow-xl cursor-pointer"
-                        />
-                    </div>
-                ))
-            ) : (
-                <p>Loading images...</p>
-            )}
-        </div>
+    const newFlipped = [...flipedId, { id, index }];
+    setFlipedId(newFlipped);
+
+    if (newFlipped.length === 2) {
+      if (newFlipped[0].id === newFlipped[1].id) {
+        setMatchedCard((prev) => [...prev, newFlipped[0], newFlipped[1]]);
+      }
+      setTimeout(() => {
+        setFlipedId([]);
+      }, 1000);
+    }
+  }
+
+  function showImage(id, index) {
+    const isFlipped = flipedId.some((val) => val.index === index);
+    const isMatched = matchedCard.some((val) => val.index === index);
+    return isFlipped || isMatched;
+  }
+
+  useEffect(() => {
+    setUnknowImage(unknowImage);
+    const shuffledImages = [...ImagesArr, ...ImagesArr].sort(
+      () => Math.random() - 0.5
     );
-}
+    setGallery(shuffledImages);
+  }, []);
+
+  return (
+    <div className="flex flex-wrap justify-center">
+      {gallery.length > 0 ? (
+        gallery.map((val, index) => (
+          <div key={index} className="w-[25%] m-2 ">
+            <img
+              src={showImage(val.id, index) ? val.url : unknowImage}
+              onClick={() => handleFlip(index, val.id)}
+              alt={`Image ${index + 1}`}
+              className="w-full h-auto rounded-lg shadow-lg transition-shadow duration-300 hover:shadow-xl cursor-pointer"
+            />
+          </div>
+        ))
+      ) : (
+        <p>Loading images...</p>
+      )}
+    </div>
+  );
+};
 
 export default Game;
