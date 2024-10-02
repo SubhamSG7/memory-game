@@ -25,4 +25,4 @@ export let ImagesArr = [
   },
 ];
 export const unknowImage =
-  "https://img.freepik.com/premium-photo/3d-unknown-person-icon-anonymous-concept-question-mark-human-silhouette-trendy-modern-vector-3d-style_839035-1745803.jpg";
+  "https://static.vecteezy.com/system/resources/previews/008/222/212/non_2x/detective-spy-logo-free-vector.jpg";
